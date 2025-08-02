@@ -34,5 +34,5 @@ export async function POST(req: Request) {
   */
 
   // Immediately return the streaming response to the client
-  return result.toAIStreamResponse();
+  return result.toTextStreamResponse();
 }
