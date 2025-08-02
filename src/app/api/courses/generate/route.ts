@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { GoogleGenerativeAIStream, StreamingTextResponse } from 'ai';
+import { GoogleGenerativeAIStream, StreamingTextResponse } from 'ai/google';
 
 // 1. Comment out the Supabase client import
 // import { supabase } from '@/lib/supabaseClient';
