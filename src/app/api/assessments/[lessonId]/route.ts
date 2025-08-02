@@ -1,22 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 
-export async function GET(req: NextRequest, { params }: { params: { lessonId: string } }) {
-  const { lessonId } = params;
+export async function GET(
+  req: NextRequest,
+  context: { params: { lessonId: string } }
+) {
+  const { lessonId } = context.params;
 
   if (!lessonId) {
     return NextResponse.json({ error: 'Missing lesson ID' }, { status: 400 });
   }
 
-  const { data: assessments, error } = await supabase
-    .from('assessments')
-    .select('*')
-    .eq('lesson_id', lessonId);
+  try {
+    const { data, error } = await supabase
+      .from('assessments')
+      .select('*')
+      .eq('lesson_id', lessonId)
+      .single();
 
-  if (error) {
-    console.error('Error fetching assessments:', error);
-    return NextResponse.json({ error: 'Failed to fetch assessments' }, { status: 500 });
+    if (error) {
+      if (error.code === 'PGRST116') { // Not found
+        return NextResponse.json({ error: 'Assessment not found' }, { status: 404 });
+      }
+      throw error;
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-
-  return NextResponse.json(assessments);
 }
