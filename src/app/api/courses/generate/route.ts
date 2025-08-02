@@ -1,3 +1,4 @@
+import { Lesson } from '@/types';
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { supabase } from '@/lib/supabaseClient';
@@ -28,10 +29,10 @@ export async function POST(req: NextRequest) {
 
     if (courseError) throw courseError;
 
-    const lessons = courseData.lessons.map((lesson: any, index: number) => ({
+    const lessons = courseData.lessons.map((lesson: Lesson, index: number) => ({
       course_id: course!.id,
       title: lesson.title,
-      content: lesson.detailed_content,
+      content: lesson.content,
       lesson_number: index + 1,
     }));
 
