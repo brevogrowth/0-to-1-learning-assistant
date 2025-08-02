@@ -1,6 +1,7 @@
 export interface Course {
   id: string;
   topic: string;
+  description?: string; // Added description property
   duration: number;
   created_at: string;
   user_id: string;
