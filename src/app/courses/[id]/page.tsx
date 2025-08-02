@@ -1,17 +1,49 @@
-import LessonViewer from '@/components/LessonViewer';
+import { notFound } from 'next/navigation';
 import ProgressDashboard from '@/components/ProgressDashboard';
-import { Course, Lesson } from '@/types';
+import LessonViewer from '@/components/LessonViewer';
 
-async function getCourse(id: string): Promise<Course> {
-  const res = await fetch(`http://localhost:3000/api/courses/${id}`);
-  if (!res.ok) {
-    throw new Error('Failed to fetch course');
-  }
-  return res.json();
+// 1. Comment out the Supabase client import
+// import { supabase } from '@/lib/supabaseClient';
+
+// Define types locally for our mock data
+type Lesson = {
+  id: string;
+  title: string;
+  content: string;
+};
+
+/*
+// 2. Comment out the real data fetching function
+async function getCourse(id: string) {
+  const { data: course } = await supabase
+    .from('courses')
+    .select(`
+      *,
+      lessons ( * )
+    `)
+    .eq('id', id)
+    .single();
+  return course;
 }
+*/
 
 export default async function CoursePage({ params }: { params: { id: string } }) {
-  const course = await getCourse(params.id);
+  // 3. Use mock data instead of calling the real function
+  // const course = await getCourse(params.id);
+
+  const mockCourse = {
+    id: params.id,
+    topic: `Mock Course for ID ${params.id}`,
+    lessons: [
+      { id: 'L1', title: 'Mock Lesson 1', content: 'Content for mock lesson 1.'},
+      { id: 'L2', title: 'Mock Lesson 2', content: 'Content for mock lesson 2.'},
+    ]
+  };
+  const course = mockCourse;
+
+  if (!course) {
+    notFound();
+  }
 
   return (
     <div>
