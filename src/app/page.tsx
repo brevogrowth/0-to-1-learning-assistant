@@ -41,17 +41,14 @@ const HomePage = () => {
       
       // Since the API streams the response, we don't need to wait for it here.
       // We can assume success and let the user know.
-      toast({
-        title: "Course Generation Started!",
+      toast("Course Generation Started!", {
         description: `Successfully creating a personalized course on "${topic}"`, 
       });
       
       console.log("Started course generation for:", topic);
     } catch (error) {
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: "Failed to create course. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
