@@ -1,18 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { GraduationCap, Zap, Target, BookOpen } from 'lucide-react';
-import { TopicInput } from '@/components/course/TopicInput';
-import { Card, CardContent } from '@/components/ui/card';
-import { Toaster, toast } from 'sonner'; // Correct import from sonner
-
-/*
-// This commented-out function is preserved for future Supabase integration.
-async function getCourses() {
-  const { data: courses } = await supabase.from('courses').select('*');
-  return courses;
-}
-*/
+import { useState } from "react";
+import { GraduationCap, Zap, Target, BookOpen } from "lucide-react";
+import { TopicInput } from "@/components/course/TopicInput";
+import { Card, CardContent } from "@/components/ui/card";
+import { Toaster, toast } from 'sonner';
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +13,7 @@ const HomePage = () => {
     setIsLoading(true);
     
     try {
+      // Connect to our existing API endpoint
       const response = await fetch('/api/courses/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -36,14 +29,12 @@ const HomePage = () => {
         throw new Error('Failed to start course generation.');
       }
       
-      // Use the correct sonner toast API
       toast.success("Course Generation Started!", {
-        description: `Successfully creating a personalized course on "${topic}"`, 
+        description: `Creating a personalized course on "${topic}"...`,
       });
       
       console.log("Started course generation for:", topic);
     } catch (error) {
-      // Use the correct sonner toast.error API
       toast.error("Error", {
         description: "Failed to create course. Please try again.",
       });
@@ -60,9 +51,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Add the Toaster component here */}
       <Toaster position="top-center" richColors />
-
       {/* Hero Section */}
       <section className="relative pt-20 pb-16 px-4">
         <div className="absolute inset-0 bg-hero-gradient opacity-5" />
@@ -72,13 +61,17 @@ const HomePage = () => {
               <GraduationCap className="h-4 w-4" />
               <span>Personalized AI Learning Assistant</span>
             </div>
+            
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Learn Anything,
               <span className="bg-hero-gradient bg-clip-text text-transparent"> Anytime</span>
             </h1>
+            
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              Transform any topic into a structured learning experience. Our AI creates personalized courses that adapt to your learning style.
+              Transform any topic into a structured learning experience. 
+              Our AI creates personalized courses that adapt to your learning style.
             </p>
+
             <div className="mb-16">
               <TopicInput onSubmit={handleTopicSubmit} isLoading={isLoading} />
             </div>
@@ -90,18 +83,29 @@ const HomePage = () => {
       <section className="py-16 px-4 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Why Choose Our Learning Assistant?</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">Experience the future of personalized education with cutting-edge AI technology</p>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Why Choose Our Learning Assistant?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Experience the future of personalized education with cutting-edge AI technology
+            </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {features.map((feature, index) => (
-              <Card key={index} className="shadow-card border-0 bg-card hover:shadow-lg transition-all duration-200 group">
+              <Card 
+                key={index} 
+                className="shadow-card border-0 bg-card hover:shadow-lg transition-all duration-200 group"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mb-4 group-hover:bg-primary/20 transition-colors">
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
