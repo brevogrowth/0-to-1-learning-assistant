@@ -10,6 +10,9 @@ type Lesson = {
   id: string;
   title: string;
   content: string;
+  course_id: string;
+  lesson_number: number;
+  created_at: string;
 };
 
 /*
@@ -35,8 +38,8 @@ export default async function CoursePage({ params }: { params: { id: string } })
     id: params.id,
     topic: `Mock Course for ID ${params.id}`,
     lessons: [
-      { id: 'L1', title: 'Mock Lesson 1', content: 'Content for mock lesson 1.'},
-      { id: 'L2', title: 'Mock Lesson 2', content: 'Content for mock lesson 2.'},
+      { id: 'L1', title: 'Mock Lesson 1', content: 'Content for mock lesson 1.', course_id: params.id, lesson_number: 1, created_at: new Date().toISOString() },
+      { id: 'L2', title: 'Mock Lesson 2', content: 'Content for mock lesson 2.', course_id: params.id, lesson_number: 2, created_at: new Date().toISOString() },
     ]
   };
   const course = mockCourse;
