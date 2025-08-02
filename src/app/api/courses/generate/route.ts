@@ -1,20 +1,27 @@
-import { streamText } from 'ai';
-import { google } from '@ai-sdk/google';
-
-// We no longer need the @google/generative-ai package directly
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { StreamingTextResponse } from 'ai';
+import { GoogleAIStream } from '@ai-sdk/google'; // Correct import for the stream helper
 
 // import { supabase } from '@/lib/supabaseClient'; // Commented out
 
 export const runtime = 'edge';
 
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const result = await streamText({
-    // Use the model from the new @ai-sdk/google package
-    model: google('models/gemini-1.5-pro-latest'),
-    messages,
-    // The onCompletion callback still works here for your database logic
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro-latest' });
+
+  const streamingResponse = await model.generateContentStream({
+    contents: messages.map((m: { role: string; content: string }) => ({
+      role: m.role,
+      parts: [{ text: m.content }],
+    })),
+  });
+
+  // Use the GoogleAIStream helper which supports the onCompletion callback
+  const stream = GoogleAIStream(streamingResponse, {
     async onCompletion(completion) {
       console.log(`Mocked Gemini completion. Content: "${completion}"`);
       /*
@@ -31,6 +38,5 @@ export async function POST(req: Request) {
     },
   });
 
-  // The result object has a helper to convert it to a Response
-  return result.toAIStreamResponse();
+  return new StreamingTextResponse(stream);
 }
