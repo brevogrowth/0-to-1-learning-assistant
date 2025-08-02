@@ -1,39 +1,50 @@
-// Final check before deployment
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+
+// We no longer need the real Supabase client for now
+// import { supabase } from '@/lib/supabaseClient';
 
 export async function GET(
-  _req: NextRequest, // Prefixed with _ as it's unused
+  _req: NextRequest,
   { params }: { params: { lessonId: string } }
 ) {
   const { lessonId } = params;
 
-  // This check is technically not needed since a matching route
-  // guarantees lessonId exists, but it doesn't hurt.
-  if (!lessonId) {
-    return NextResponse.json({ error: 'Missing lesson ID' }, { status: 400 });
-  }
+  // --- MOCK DATA ---
+  // Instead of calling the database, we define a fake assessment object.
+  // You can customize this data to match what you expect from Supabase.
+  const mockAssessment = {
+    id: `mock-assessment-for-${lessonId}`,
+    lesson_id: lessonId,
+    title: "Mock Assessment Title",
+    questions: [
+      { id: 'q1', text: 'What is the capital of France?', options: ['Paris', 'London', 'Berlin'], correct_option: 'Paris' },
+      { id: 'q2', text: 'What is 2 + 2?', options: ['3', '4', '5'], correct_option: '4' },
+    ],
+  };
 
+  // Immediately return the mock data.
+  return NextResponse.json(mockAssessment);
+
+  /*
+  // --- REAL SUPABASE CODE (COMMENTED OUT FOR LATER) ---
   try {
     const { data, error } = await supabase
       .from('assessments')
       .select('*')
       .eq('lesson_id', lessonId)
-      .single(); // .single() correctly throws an error if 0 or >1 rows are found
+      .single();
 
     if (error) {
-      // Handle the case where no assessment is found
       if (error.code === 'PGRST116') {
         return NextResponse.json({ error: 'Assessment not found' }, { status: 404 });
       }
-      // For any other database error, re-throw it to be caught by the catch block
       throw error;
     }
 
     return NextResponse.json(data);
   } catch (error) {
-    //  Log the actual error to the server console for debugging
     console.error('Error fetching assessment:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
+  */
 }
