@@ -1,31 +1,22 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { GoogleGenerativeAIStream, StreamingTextResponse } from 'ai/google';
+import { streamText } from 'ai';
+import { google } from '@ai-sdk/google';
 
-// 1. Comment out the Supabase client import
-// import { supabase } from '@/lib/supabaseClient';
+// We no longer need the @google/generative-ai package directly
+
+// import { supabase } from '@/lib/supabaseClient'; // Commented out
 
 export const runtime = 'edge';
-
-// Initialize the Gemini client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro-latest' });
-
-  const streamingResponse = await model.generateContentStream({
-    contents: messages.map((m: { role: string; content: string }) => ({
-      role: m.role,
-      parts: [{ text: m.content }],
-    })),
-  });
-
-  // Convert the response into a friendly text-stream
-  const stream = GoogleGenerativeAIStream(streamingResponse, {
-    // 2. Comment out the database logic within the onCompletion callback
+  const result = await streamText({
+    // Use the model from the new @ai-sdk/google package
+    model: google('models/gemini-1.5-pro-latest'),
+    messages,
+    // The onCompletion callback still works here for your database logic
     async onCompletion(completion) {
-      console.log(`Mocked Gemini completion for course generation. Content: "${completion}"`);
+      console.log(`Mocked Gemini completion. Content: "${completion}"`);
       /*
       // --- REAL SUPABASE CODE (COMMENTED OUT) ---
       const { data: newCourse, error } = await supabase
@@ -40,5 +31,6 @@ export async function POST(req: Request) {
     },
   });
 
-  return new StreamingTextResponse(stream);
+  // The result object has a helper to convert it to a Response
+  return result.toAIStreamResponse();
 }
