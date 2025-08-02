@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { GraduationCap, Zap, Target, BookOpen } from 'lucide-react';
 import { TopicInput } from '@/components/course/TopicInput';
 import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster, toast } from 'sonner'; // Correct import from sonner
 
 /*
 // This commented-out function is preserved for future Supabase integration.
@@ -17,13 +16,11 @@ async function getCourses() {
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const handleTopicSubmit = async (topic: string) => {
     setIsLoading(true);
     
     try {
-      // Connect to our existing API endpoint
       const response = await fetch('/api/courses/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,14 +36,14 @@ const HomePage = () => {
         throw new Error('Failed to start course generation.');
       }
       
-      // Since the API streams the response, we don't need to wait for it here.
-      // We can assume success and let the user know.
-      toast("Course Generation Started!", {
+      // Use the correct sonner toast API
+      toast.success("Course Generation Started!", {
         description: `Successfully creating a personalized course on "${topic}"`, 
       });
       
       console.log("Started course generation for:", topic);
     } catch (error) {
+      // Use the correct sonner toast.error API
       toast.error("Error", {
         description: "Failed to create course. Please try again.",
       });
@@ -63,6 +60,9 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Add the Toaster component here */}
+      <Toaster position="top-center" richColors />
+
       {/* Hero Section */}
       <section className="relative pt-20 pb-16 px-4">
         <div className="absolute inset-0 bg-hero-gradient opacity-5" />
@@ -72,16 +72,13 @@ const HomePage = () => {
               <GraduationCap className="h-4 w-4" />
               <span>Personalized AI Learning Assistant</span>
             </div>
-            
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Learn Anything,
               <span className="bg-hero-gradient bg-clip-text text-transparent"> Anytime</span>
             </h1>
-            
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
               Transform any topic into a structured learning experience. Our AI creates personalized courses that adapt to your learning style.
             </p>
-
             <div className="mb-16">
               <TopicInput onSubmit={handleTopicSubmit} isLoading={isLoading} />
             </div>
@@ -111,9 +108,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      
-      {/* Toaster for notifications */}
-      <Toaster />
     </div>
   );
 };
