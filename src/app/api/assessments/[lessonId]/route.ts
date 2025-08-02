@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 
-interface Context {
-  params: { lessonId: string };
-}
-
-export async function GET(req: NextRequest, context: Context) {
-  const { lessonId } = context.params;
+export async function GET(req: NextRequest, { params }: { params: { lessonId: string } }) {
+  const { lessonId } = params;
 
   if (!lessonId) {
     return NextResponse.json({ error: 'Missing lesson ID' }, { status: 400 });
