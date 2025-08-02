@@ -1,4 +1,4 @@
-export default function ProgressDashboard({ progress }: { progress: any }) {
+export default function ProgressDashboard() {
   return (
     <div>
       <h3>Your Progress</h3>

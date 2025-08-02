@@ -1,4 +1,6 @@
-export default function AssessmentInterface({ assessment }: { assessment: any }) {
+import { Assessment } from '@/types';
+
+export default function AssessmentInterface({ assessment }: { assessment: Assessment }) {
   return (
     <div>
       <h4>{assessment.question}</h4>
