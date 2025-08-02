@@ -1,21 +1,40 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest) {
-  const { userId, lessonId, completed } = await req.json();
+// import { supabase } from '@/lib/supabaseClient'; // Commented out
 
-  if (!userId || !lessonId || completed === undefined) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-  }
+export async function POST(request: Request) {
+  // We still read the data from the request to simulate the action
+  const { lessonId, progress } = await request.json();
 
-  const { error } = await supabase
-    .from('user_progress')
-    .upsert({ user_id: userId, lesson_id: lessonId, completed }, { onConflict: 'user_id,lesson_id' });
+  // --- MOCK RESPONSE ---
+  // The real database call is disabled. We'll log the received data
+  // and return a standard success message.
+  console.log(`Mock progress update for lesson ${lessonId} with progress:`, progress);
 
-  if (error) {
+  return NextResponse.json({
+    message: 'Progress update mocked successfully',
+    lessonId,
+    progress,
+  });
+
+  /*
+  // --- REAL SUPABASE CODE (COMMENTED OUT) ---
+  try {
+    const { data, error } = await supabase
+      .from('progress')
+      .upsert({
+        lesson_id: lessonId,
+        progress: progress,
+        // Note: A real implementation would also need a user_id
+      })
+      .select();
+
+    if (error) throw error;
+
+    return NextResponse.json(data);
+  } catch (error) {
     console.error('Error updating progress:', error);
-    return NextResponse.json({ error: 'Failed to update progress' }, { status: 500 });
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
-
-  return NextResponse.json({ success: true });
+  */
 }
