@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { GraduationCap, Zap, Target, BookOpen } from "lucide-react";
-import { TopicInput } from "@/components/TopicInput";
+import { TopicInput } from "@/components/course/TopicInput";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from 'sonner'; // Notice: Toaster is NOT imported here
 
