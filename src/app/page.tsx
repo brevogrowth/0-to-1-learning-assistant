@@ -1,25 +1,18 @@
 'use client';
 
 import { useState } from "react";
-import { GraduationCap, Zap, Target, BookOpen, PlusCircle, Sparkles, Users } from "lucide-react";
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
+import { GraduationCap, Zap, Target, BookOpen } from "lucide-react";
+import { TopicInput } from "@/components/course/TopicInput";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from 'sonner'; // Notice: Toaster is NOT imported here
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [courseTitle, setCourseTitle] = useState('');
-  const [courseDescription, setCourseDescription] = useState('');
 
-  const handleTopicSubmit = async () => {
+  const handleTopicSubmit = async (topic: string) => {
     setIsLoading(true);
-    const topic = `${courseTitle}: ${courseDescription}`;
     
     try {
-      // Connect to our existing API endpoint
       const response = await fetch('/api/courses/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,7 +32,6 @@ const HomePage = () => {
         description: `Creating a personalized course on "${topic}"...`,
       });
       
-      console.log("Started course generation for:", topic);
     } catch (error) {
       toast.error("Error", {
         description: "Failed to create course. Please try again.",
@@ -49,118 +41,76 @@ const HomePage = () => {
     }
   };
 
+  const features = [
+    { icon: Zap, title: "AI-Powered Learning", description: "Get personalized courses tailored to your learning style and pace" },
+    { icon: Target, title: "Goal-Oriented", description: "Set clear objectives and track your progress with detailed analytics" },
+    { icon: BookOpen, title: "Comprehensive Content", description: "Access curated lessons, exercises, and resources for any topic" }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+    <div className="min-h-screen bg-background">
+      {/* The Toaster component has been removed from this file. */}
       
-      <div className="container mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center mb-6">
-            <div className="bg-primary/10 p-4 rounded-full">
-              <BookOpen className="h-12 w-12 text-primary" />
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 px-4">
+        <div className="absolute inset-0 bg-hero-gradient opacity-5" />
+        <div className="container mx-auto text-center relative">
+          <div className="max-w-4xl mx-auto animate-fade-in">
+            <div className="inline-flex items-center space-x-2 bg-muted px-4 py-2 rounded-full text-sm text-muted-foreground mb-6">
+              <GraduationCap className="h-4 w-4" />
+              <span>Personalized AI Learning Assistant</span>
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+              Learn Anything,
+              <span className="bg-hero-gradient bg-clip-text text-transparent"> Anytime</span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+              Transform any topic into a structured learning experience. 
+              Our AI creates personalized courses that adapt to your learning style.
+            </p>
+
+            <div className="mb-16">
+              <TopicInput onSubmit={handleTopicSubmit} isLoading={isLoading} />
             </div>
           </div>
-          <h1 className="text-5xl font-bold text-foreground mb-4">
-            Welcome to <span className="text-primary">0to1 Learning</span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Transform your ideas into engaging courses with AI-powered content generation. 
-            Create, organize, and deliver learning experiences that inspire.
-          </p>
         </div>
+      </section>
 
-        {/* Main Course Creation Card */}
-        <div className="max-w-2xl mx-auto mb-16">
-          <Card className="shadow-lg border-0 bg-gradient-card">
-            <CardHeader className="text-center">
-              <CardTitle className="flex items-center justify-center space-x-2 text-2xl">
-                <Sparkles className="h-6 w-6 text-primary" />
-                <span>Create Your First Course</span>
-              </CardTitle>
-              <CardDescription className="text-base">
-                Describe your course idea and let AI help you build the perfect learning experience
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-medium">
-                  Course Title
-                </Label>
-                <Input
-                  id="title"
-                  placeholder="e.g., Introduction to Machine Learning"
-                  value={courseTitle}
-                  onChange={(e) => setCourseTitle(e.target.value)}
-                  className="text-base"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm font-medium">
-                  Course Description
-                </Label>
-                <Textarea
-                  id="description"
-                  placeholder="Describe what you want to teach, the target audience, and key learning objectives..."
-                  value={courseDescription}
-                  onChange={(e) => setCourseDescription(e.target.value)}
-                  rows={4}
-                  className="text-base resize-none"
-                />
-              </div>
-              
-              <Button 
-                onClick={handleTopicSubmit}
-                disabled={!courseTitle.trim() || !courseDescription.trim() || isLoading}
-                className="w-full text-base py-6"
-                size="lg"
+      {/* Features Section */}
+      <section className="py-16 px-4 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Why Choose Our Learning Assistant?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Experience the future of personalized education with cutting-edge AI technology
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {features.map((feature, index) => (
+              <Card 
+                key={index} 
+                className="shadow-card border-0 bg-card hover:shadow-lg transition-all duration-200 group"
               >
-                <PlusCircle className="h-5 w-5 mr-2" />
-                Generate Course with AI
-              </Button>
-            </CardContent>
-          </Card>
+                <CardContent className="p-6 text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mb-4 group-hover:bg-primary/20 transition-colors">
+                    <feature.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
-
-        {/* Feature Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16">
-          <Card className="text-center border-0 bg-gradient-card">
-            <CardContent className="pt-6">
-              <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-2">AI-Powered Generation</h3>
-              <p className="text-sm text-muted-foreground">
-                Automatically generate course content, lessons, and assessments using advanced AI
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="text-center border-0 bg-gradient-card">
-            <CardContent className="pt-6">
-              <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-2">Interactive Learning</h3>
-              <p className="text-sm text-muted-foreground">
-                Create engaging lessons with multimedia content and interactive elements
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="text-center border-0 bg-gradient-card">
-            <CardContent className="pt-6">
-              <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold mb-2">Progress Tracking</h3>
-              <p className="text-sm text-muted-foreground">
-                Monitor learner progress and provide personalized feedback
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      </section>
     </div>
   );
 };
